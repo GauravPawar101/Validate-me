@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres
+    container_name: prisma_db
+    restart: always
+    ports:
+      - "5433:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String?
+  total     Float     @default(0)
+  monthly   Float     @default(0)
+  hours     Float
+  lastLogin DateTime?  
+  createdAt DateTime  @default(now()) 
+  updatedAt DateTime  @updatedAt()    
+  
+  days      Days[]
+  websites  Website[]
+}
+
+model Days {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime @unique
+  hours     Float    @default(0)
+  createdAt DateTime @default(now()) 
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, date])
+}
+
+model Website {
+  id                 String        @id @default(uuid())
+  url                String        @unique
+  userId             String
+  disabled           Boolean       @default(false)
+  status             WebsiteStatus?
+  lastChecked        DateTime?
+  validationInProgress Boolean      @default(false)
+  createdAt          DateTime      @default(now()) 
+  
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticks              WebsiteTick[]
+}
+
+model Validator {
+  id               String        @id @default(uuid())
+  publicKey        String        @unique
+  location         String        @default("unknown")
+  ip               String
+  status           ValidatorStatus @default(online)
+  version          String        @default("1.0.0")
+  capabilities     String[]      @default(["http"])
+  pendingPayouts   Int           @default(0)
+  totalValidations Int           @default(0)
+  totalPaid        Int           @default(0)
+  lastSeen         DateTime      @default(now())
+  lastPaid         DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt()
+  
+  ticks            WebsiteTick[]
+  payments         Payment[]
+}
+
+model WebsiteTick {
+  id          String        @id @default(uuid())
+  websiteId   String
+  validatorId String
+  status      WebsiteStatus
+  latency     Float
+  details     Json          @default("{}")
+  createdAt   DateTime      @default(now())
+  
+  validator   Validator     @relation(fields: [validatorId], references: [id], onDelete: Cascade)
+  website     Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  
+  @@index([websiteId, createdAt])
+  @@index([validatorId, createdAt])
+}
+
+model Payment {
+  id           String        @id @default(uuid())
+  validatorId  String
+  amount       Int
+  txSignature  String?
+  status       PaymentStatus
+  notes        String?
+  websiteId    String?      
+  createdAt    DateTime      @default(now())
+  
+  validator    Validator     @relation(fields: [validatorId], references: [id], onDelete: Cascade)
+  
+  @@index([validatorId, createdAt])
+  @@index([status, createdAt])
+}
+
+enum WebsiteStatus {
+  good
+  bad
+}
+
+enum ValidatorStatus {
+  online
+  offline
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+}
