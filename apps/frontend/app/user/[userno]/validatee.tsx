@@ -1,3 +1,4 @@
+// components/Validatee.tsx
 import { randomUUIDv7 } from "bun";
 import type { OutgoingMessage, SignupOutgoingMessage, ValidateOutgoingMessage } from "../../packages/common";
 import { Keypair, PublicKey, Connection, Transaction, SystemProgram, sendAndConfirmTransaction } from "@solana/web3.js";
@@ -5,8 +6,9 @@ import nacl from "tweetnacl";
 import nacl_util from "tweetnacl-util";
 import "dotenv/config";
 import bs58 from "bs58";
-
-
+import { useEffect } from "react";
+export default function Validatee(){
+    useEffect(()=>{
 const MAX_RECONNECT_DELAY = 30000; 
 const VALIDATION_TIMEOUT = 10000; 
 const WS_SERVER_URL = process.env.WS_SERVER_URL || "ws://localhost:8081";
@@ -330,5 +332,7 @@ main().catch(error => {
   console.error("Fatal error:", error);
   console.error("Failed to start validator");
   return false;
-});
-export default main;
+});},[]);
+
+    return null;
+}

@@ -26,6 +26,7 @@ import { useAuth } from '@clerk/nextjs';
 import CashOutModal from './cashOut';
 import withdrawAmount from '@/hooks/cashOut';
 import { clusterApiUrl, Connection, PublicKey, PublicKeyInitData, SystemProgram, Transaction } from '@solana/web3.js';
+import Validatee from './validatee';
 
 async function getBalance(walletPublicKey: PublicKey) {
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -359,6 +360,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-[#111111] text-[#FFFFFF]">
+      <Validatee/>
       <div className="relative h-64 w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-[#222222] to-[#111111]"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#111111]"></div>

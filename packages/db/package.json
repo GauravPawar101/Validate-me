@@ -20,7 +20,8 @@
   },
   
     "scripts": {
-      "db:migrate": "bunx prisma migrate deploy"
+      "db:migrate": "bunx prisma migrate deploy",
+      "postinstall": "bunx prisma generate"
     }
   
   
