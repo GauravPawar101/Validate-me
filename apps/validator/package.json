@@ -14,5 +14,10 @@
     "bs58": "^6.0.0",
     "dns": "^0.2.2",
     "dotenv": "^16.4.7"
-  }
+  },
+    "scripts": {
+      "build": "bunx prisma generate --schema=../../packages/db/schema.prisma && bun run build"
+    }
+  
+  
 }
