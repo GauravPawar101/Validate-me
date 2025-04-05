@@ -17,5 +17,11 @@
   },
   "prisma": {
     "seed": "bun run ./prisma/seed.ts"
-  }
+  },
+  
+    "scripts": {
+      "db:migrate": "bunx prisma migrate deploy"
+    }
+  
+  
 }
