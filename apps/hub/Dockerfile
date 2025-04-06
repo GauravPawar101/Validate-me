@@ -1,17 +1,19 @@
-# Use Bun official image
 FROM oven/bun:latest
 
-# Set working directory
 WORKDIR /app
 
-# Copy everything into the container
+# Copy the entire monorepo (or just what’s needed)
+COPY ../../packages/db ./packages/db
 COPY . .
 
 # Install dependencies
 RUN bun install
 
-# Expose the port (make sure your app reads from PORT env var)
-EXPOSE 3000
+# Generate Prisma Client (adjust schema path if needed)
+RUN bunx prisma generate --schema=./packages/db/schema.prisma
 
-# Start the app
+# Expose the port your WebSocket server uses
+EXPOSE 8081
+
+# Run your Bun app
 CMD ["bun", "index.ts"]
